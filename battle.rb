@@ -9,7 +9,7 @@ class Arena
   end
 
   def self.attack(hero,opponent)
-    if hero.critical > opponent.armor
+    if hero.critical >= opponent.armor
       hero.dmg -= opponent.armor
     end
     opponent.hp -= hero.dmg
@@ -37,7 +37,7 @@ class Warrior < Hero
   end
 
   def critical
-    @dmg = Dice.chance50(dmg,crit)
+    Dice.chance50(dmg,crit)
   end
 
 end
@@ -53,7 +53,7 @@ class Healer < Hero
   end
 
   def critical
-    @dmg = Dice.chance25(dmg,crit)
+    Dice.chance25(dmg,crit)
   end
 
 end
@@ -69,7 +69,7 @@ class Mage < Hero
   end
 
   def critical
-    @dmg = Dice.chance25(dmg,crit)
+    Dice.chance25(dmg,crit)
   end
 
 
@@ -86,7 +86,7 @@ class Tank < Hero
   end
 
   def critical
-    dmg = Dice.chance50(dmg,crit)
+    Dice.chance50(dmg,crit)
   end
 
 
@@ -97,7 +97,7 @@ class Dice
   def self.chance50(dmg,crit)
     n = rand(1..2)
     if n == 1
-      dmg = dmg + crit
+      dmg + crit
     else
       dmg
     end
@@ -106,7 +106,7 @@ class Dice
   def self.chance25(dmg,crit)
     n = rand(1..4)
     if n == 1
-      dmg = dmg + crit
+      dmg + crit
     else
       dmg
     end
@@ -120,6 +120,6 @@ m = Mage.new
 t = Tank.new
 
 Arena.duel(w,h)
-#Arena.duel(m,t)
-#Arena.duel(m,h)
-#Arena.duel(w,t)
+Arena.duel(m,t)
+Arena.duel(m,h)
+Arena.duel(w,t)
