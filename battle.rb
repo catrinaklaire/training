@@ -1,29 +1,28 @@
 class Arena
 
-  def duel(hero1,hero2)
+  def self.duel(hero1,hero2)
     heroes = [hero1,hero2]
     heroes = heroes.shuffle
     hero = heroes.pop
     opponent = heroes.pop
-    hero.attack(opponent)
+    attack(hero,opponent)
   end
+
+  def self.attack(hero,opponent)
+    if hero.critical > opponent.armor
+      hero.dmg -= opponent.armor
+    end
+    opponent.hp -= hero.dmg
+    puts("#{opponent.name} was attacked. HP is now #{opponent.hp}.")
+  end
+
 
 end
 
 class Hero
 
-  attr_accessor :hp,:armor,:dmg,:name
-
-
-  def attack(opponent)
-    if dmg >= opponent.dmg
-      opponent.hp -= dmg
-      puts("#{opponent.name} is defeated. HP is now #{opponent.hp}.")
-    else
-      hp -= opponent.dmg
-      puts("#{name} is defeated. HP is now #{hp}.")
-    end
-  end
+  attr_accessor :hp,:armor,:dmg
+  attr_reader :name,:crit
 
 end
 
@@ -34,6 +33,11 @@ class Warrior < Hero
     @armor = 25
     @dmg = 25
     @name = "Warrior"
+    @crit = 100
+  end
+
+  def critical
+    @dmg = Dice.chance50(dmg,crit)
   end
 
 end
@@ -45,6 +49,11 @@ class Healer < Hero
     @armor = 0
     @dmg = 5
     @name = "Healer"
+    @crit = 20
+  end
+
+  def critical
+    @dmg = Dice.chance25(dmg,crit)
   end
 
 end
@@ -56,7 +65,13 @@ class Mage < Hero
     @armor = 0
     @dmg = 100
     @name = "Mage"
+    @crit = 125
   end
+
+  def critical
+    @dmg = Dice.chance25(dmg,crit)
+  end
+
 
 end
 
@@ -67,6 +82,34 @@ class Tank < Hero
     @armor = 100
     @dmg = 0.5
     @name = "Tank"
+    @crit = 50
+  end
+
+  def critical
+    dmg = Dice.chance50(dmg,crit)
+  end
+
+
+end
+
+class Dice
+
+  def self.chance50(dmg,crit)
+    n = rand(1..2)
+    if n == 1
+      dmg = dmg + crit
+    else
+      dmg
+    end
+  end
+
+  def self.chance25(dmg,crit)
+    n = rand(1..4)
+    if n == 1
+      dmg = dmg + crit
+    else
+      dmg
+    end
   end
 
 end
@@ -76,4 +119,7 @@ h = Healer.new
 m = Mage.new
 t = Tank.new
 
-Arena.new.duel(w,h)
+Arena.duel(w,h)
+#Arena.duel(m,t)
+#Arena.duel(m,h)
+#Arena.duel(w,t)
