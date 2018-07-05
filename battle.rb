@@ -1,20 +1,34 @@
-class Arena
+class Mode
 
-  def self.duel(hero1,hero2)
+  def self.attack(hero1,hero2)
     heroes = [hero1,hero2]
     heroes = heroes.shuffle
     hero = heroes.pop
     opponent = heroes.pop
-    attack(hero,opponent)
-  end
-
-  def self.attack(hero,opponent)
-    if hero.critical >= opponent.armor
-      hero.dmg -= opponent.armor
+    hero.dmg = hero.critical - opponent.armor
+    if hero.dmg > 0
+      opponent.hp -= hero.dmg
     end
-    opponent.hp -= hero.dmg
     puts("#{opponent.name} was attacked. HP is now #{opponent.hp}.")
   end
+
+end
+
+class DeathMatch < Mode
+
+  def begin(hero,opponent)
+    5.times{Mode.attack(hero,opponent)}
+  end
+
+end
+
+
+class Arena
+
+  def self.duel(hero1,hero2,mode)
+    mode.begin(hero1,hero2)
+  end
+
 
 
 end
@@ -119,7 +133,9 @@ h = Healer.new
 m = Mage.new
 t = Tank.new
 
-Arena.duel(w,h)
-Arena.duel(m,t)
-Arena.duel(m,h)
-Arena.duel(w,t)
+d = DeathMatch.new
+
+Arena.duel(w,h,d)
+Arena.duel(m,t,d)
+Arena.duel(m,h,d)
+Arena.duel(w,t,d)
